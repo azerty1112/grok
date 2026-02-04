@@ -1,0 +1,107 @@
+# ======================================================
+#                GENERAL SETTINGS
+# ======================================================
+
+GROK_URL=https://grok.com/imagine
+DOWNLOAD_ROOT=./videos
+VIDEO_SCRIPTS_FOLDER=./video_scripts
+LOG_FILE=automation.log
+
+CHECK_INTERVAL=3000
+MAX_WAIT=420000
+AFTER_DOWNLOAD_WAIT=9000
+BETWEEN_SCENES_WAIT=7000
+BETWEEN_VIDEOS_WAIT=18000
+
+MAX_RETRIES=3
+MAX_GLOBAL_RETRIES=2
+
+HEADLESS=false
+WINDOW_WIDTH=1366
+WINDOW_HEIGHT=768
+
+# ======================================================
+#                BROWSER & FINGERPRINT
+# ======================================================
+
+USER_DATA_DIR=./user_data
+SLOW_MO=20
+
+USER_AGENTS=[
+"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",]
+
+# ======================================================
+#                GROK SETTINGS (قبل أي كتابة)
+# ======================================================
+
+GROK_SETTING_RATIO_BUTTON=button[data-testid="ratio-vertical"], button:contains("9:16")
+GROK_SETTING_VIDEO_MODE_BUTTON=button[data-testid="mode-video"], button:contains("Video")
+GROK_SETTING_QUALITY_BUTTON=button[data-testid="quality-high"], button:contains("High")
+GROK_SETTING_WATERMARK_OFF=button[data-testid="watermark-off"]
+GROK_SETTING_MUTE_ON=button[data-testid="mute-on"]
+
+# ======================================================
+#          PAGE READINESS (بعد Cloudflare)
+# ======================================================
+
+PAGE_READY_SELECTOR=p[data-placeholder="Tapez pour imaginer"]
+
+# ======================================================
+#              INPUT FIELD
+# ======================================================
+
+INPUT_SELECTOR=p[data-placeholder="Tapez pour imaginer"]
+
+# ======================================================
+#           SUBMIT BUTTON
+# ======================================================
+
+SUBMIT_SELECTOR=svg[width="20"][height="20"]
+
+# ======================================================
+#        GENERATION STATUS (أثناء التوليد)
+# ======================================================
+
+CANCEL_BUTTON_SELECTOR=button:has-text("Annuler la vidéo")
+
+# ======================================================
+#         DOWNLOAD (بعد انتهاء التوليد)
+# ======================================================
+
+DOWNLOAD_BUTTON_SELECTOR=button[aria-label="Télécharger"]
+
+# ======================================================
+#          VIDEO DETECTION (احتياطي)
+# ======================================================
+
+VIDEO_ELEMENT_SELECTOR=video, video source
+VIDEO_URL_KEYWORDS=.mp4,.webm,video,m3u8,blob:
+
+# ======================================================
+#          FOLDERS & NAMING
+# ======================================================
+
+SCENE_FILENAME_PATTERN=scene_%INDEX%.mp4
+VIDEO_FOLDER_PATTERN=%TITLE%
+SANITIZE_FILENAMES=true
+
+# ======================================================
+#         PERFORMANCE & STABILITY
+# ======================================================
+
+NAVIGATION_TIMEOUT=90000
+ACTION_TIMEOUT=60000
+AUTO_RECOVER_ON_CRASH=true
+
+# ======================================================
+#         DEBUG & LOGGING
+# ======================================================
+
+DEBUG_MODE=true
+SAVE_HTML_ON_ERROR=true
+SCREENSHOT_ON_ERROR=true
+
+# ======================================================
+#         OPTIONAL: PROXY
+# ======================================================
+# PROXY_SERVER=
