@@ -1,18 +1,17 @@
 {
-  "name": "bv",
+  "name": "grok-automation-gui",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "description": "واجهة رسومية احترافية لأتمتة الفيديو في grok.com",
+  "main": "electron-main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "test": "node utils.test.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "puppeteer": "^24.36.1",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "electron": "^29.1.0",
+    "puppeteer-extra": "^3.4.3",
+    "puppeteer-extra-plugin-stealth": "^2.11.1",
+    "puppeteer": "^20.8.1",
+    "nodemailer": "^6.9.11"
   }
 }
