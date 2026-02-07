@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grok Automation Console</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app__header">
+        <div>
+          <h1>لوحة التحكم الذكية</h1>
+          <p>تحكم تفصيلي كامل في إعدادات الأتمتة مع متابعة فورية للتقدم واللوج.</p>
+        </div>
+        <div class="header__actions">
+          <button id="save-config" class="btn btn--secondary">حفظ الإعدادات</button>
+          <button id="run-automation" class="btn btn--primary">تشغيل الأتمتة</button>
+        </div>
+      </header>
+
+      <main class="app__grid">
+        <section class="panel">
+          <h2>الحالة المباشرة</h2>
+          <div class="status">
+            <div>
+              <span class="status__label">الحالة:</span>
+              <span id="status-running" class="status__value">متوقف</span>
+            </div>
+            <div>
+              <span class="status__label">التقدم:</span>
+              <span id="status-progress" class="status__value">0%</span>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-bar__fill"></div>
+          </div>
+          <div class="log">
+            <div class="log__header">
+              <h3>سجل التشغيل</h3>
+              <button id="refresh-log" class="btn btn--ghost">تحديث</button>
+            </div>
+            <pre id="log-output">جاهز...</pre>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>الإعدادات العامة</h2>
+          <div class="form-grid">
+            <label>
+              رابط Grok
+              <input data-config id="GROK_URL" data-type="string" type="text" />
+            </label>
+            <label>
+              لغة الواجهة
+              <select data-config id="LANGUAGE" data-type="string">
+                <option value="ar">العربية</option>
+                <option value="fr">الفرنسية</option>
+                <option value="en">الإنجليزية</option>
+              </select>
+            </label>
+            <label>
+              مجلد تنزيل الفيديوهات
+              <input data-config id="DOWNLOAD_ROOT" data-type="string" type="text" />
+            </label>
+            <label>
+              مجلد السكربتات
+              <input data-config id="VIDEO_SCRIPTS_FOLDER" data-type="string" type="text" />
+            </label>
+            <label>
+              ملف السجل
+              <input data-config id="LOG_FILE" data-type="string" type="text" />
+            </label>
+            <label>
+              مجلد الأخطاء
+              <input data-config id="ERRORS_DIR" data-type="string" type="text" />
+            </label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>التوقيت والانتظار</h2>
+          <div class="form-grid">
+            <label>
+              فاصل التحقق (ms)
+              <input data-config id="CHECK_INTERVAL" data-type="number" type="number" min="500" step="500" />
+            </label>
+            <label>
+              الحد الأقصى للانتظار (ms)
+              <input data-config id="MAX_WAIT" data-type="number" type="number" min="1000" step="1000" />
+            </label>
+            <label>
+              بعد التنزيل (ms)
+              <input data-config id="AFTER_DOWNLOAD_WAIT" data-type="number" type="number" min="1000" step="500" />
+            </label>
+            <label>
+              بين المشاهد (ms)
+              <input data-config id="BETWEEN_SCENES_WAIT" data-type="number" type="number" min="1000" step="500" />
+            </label>
+            <label>
+              بين الفيديوهات (ms)
+              <input data-config id="BETWEEN_VIDEOS_WAIT" data-type="number" type="number" min="1000" step="1000" />
+            </label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>إعدادات المتصفح</h2>
+          <div class="form-grid">
+            <label class="toggle">
+              تشغيل بدون واجهة (Headless)
+              <input data-config id="HEADLESS" data-type="boolean" type="checkbox" />
+            </label>
+            <label>
+              عرض النافذة
+              <input data-config id="WINDOW_WIDTH" data-type="number" type="number" min="800" step="10" />
+            </label>
+            <label>
+              ارتفاع النافذة
+              <input data-config id="WINDOW_HEIGHT" data-type="number" type="number" min="600" step="10" />
+            </label>
+            <label>
+              مسار بيانات المستخدم
+              <input data-config id="USER_DATA_DIR" data-type="string" type="text" />
+            </label>
+            <label>
+              تباطؤ الحركة (ms)
+              <input data-config id="SLOW_MO" data-type="number" type="number" min="0" step="5" />
+            </label>
+            <label class="wide">
+              User Agents (كل سطر قيمة)
+              <textarea data-config id="USER_AGENTS" data-type="array" rows="3"></textarea>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>محاولات وإسترجاع</h2>
+          <div class="form-grid">
+            <label>
+              عدد المحاولات
+              <input data-config id="MAX_RETRIES" data-type="number" type="number" min="0" step="1" />
+            </label>
+            <label>
+              محاولات عالمية
+              <input data-config id="MAX_GLOBAL_RETRIES" data-type="number" type="number" min="0" step="1" />
+            </label>
+            <label class="toggle">
+              استرجاع تلقائي بعد الأعطال
+              <input data-config id="AUTO_RECOVER_ON_CRASH" data-type="boolean" type="checkbox" />
+            </label>
+            <label class="toggle">
+              حفظ HTML عند الخطأ
+              <input data-config id="SAVE_HTML_ON_ERROR" data-type="boolean" type="checkbox" />
+            </label>
+            <label class="toggle">
+              لقطة شاشة عند الخطأ
+              <input data-config id="SCREENSHOT_ON_ERROR" data-type="boolean" type="checkbox" />
+            </label>
+            <label class="toggle">
+              وضع التصحيح
+              <input data-config id="DEBUG_MODE" data-type="boolean" type="checkbox" />
+            </label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>المحددات المتقدمة</h2>
+          <div class="form-grid">
+            <label>
+              محدد نسبة العرض
+              <input data-config id="GROK_SETTING_RATIO_BUTTON" data-type="string" type="text" />
+            </label>
+            <label>
+              محدد وضع الفيديو
+              <input data-config id="GROK_SETTING_VIDEO_MODE_BUTTON" data-type="string" type="text" />
+            </label>
+            <label>
+              محدد الجودة
+              <input data-config id="GROK_SETTING_QUALITY_BUTTON" data-type="string" type="text" />
+            </label>
+            <label>
+              إيقاف العلامة المائية
+              <input data-config id="GROK_SETTING_WATERMARK_OFF" data-type="string" type="text" />
+            </label>
+            <label>
+              كتم الصوت
+              <input data-config id="GROK_SETTING_MUTE_ON" data-type="string" type="text" />
+            </label>
+            <label>
+              جاهزية الصفحة
+              <input data-config id="PAGE_READY_SELECTOR" data-type="string" type="text" />
+            </label>
+            <label>
+              محدد الإدخال
+              <input data-config id="INPUT_SELECTOR" data-type="string" type="text" />
+            </label>
+            <label>
+              زر الإرسال
+              <input data-config id="SUBMIT_SELECTOR" data-type="string" type="text" />
+            </label>
+            <label>
+              زر الإلغاء
+              <input data-config id="CANCEL_BUTTON_SELECTOR" data-type="string" type="text" />
+            </label>
+            <label>
+              زر التنزيل
+              <input data-config id="DOWNLOAD_BUTTON_SELECTOR" data-type="string" type="text" />
+            </label>
+            <label>
+              عنصر الفيديو
+              <input data-config id="VIDEO_ELEMENT_SELECTOR" data-type="string" type="text" />
+            </label>
+            <label>
+              كلمات رابط الفيديو
+              <input data-config id="VIDEO_URL_KEYWORDS" data-type="string" type="text" />
+            </label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>تنسيق الملفات والوقت</h2>
+          <div class="form-grid">
+            <label>
+              نمط اسم المشهد
+              <input data-config id="SCENE_FILENAME_PATTERN" data-type="string" type="text" />
+            </label>
+            <label>
+              نمط المجلد
+              <input data-config id="VIDEO_FOLDER_PATTERN" data-type="string" type="text" />
+            </label>
+            <label class="toggle">
+              تنقية الأسماء
+              <input data-config id="SANITIZE_FILENAMES" data-type="boolean" type="checkbox" />
+            </label>
+            <label>
+              مهلة التنقل
+              <input data-config id="NAVIGATION_TIMEOUT" data-type="number" type="number" min="1000" step="1000" />
+            </label>
+            <label>
+              مهلة الإجراءات
+              <input data-config id="ACTION_TIMEOUT" data-type="number" type="number" min="1000" step="1000" />
+            </label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>الإشعارات بالبريد</h2>
+          <div class="form-grid">
+            <label class="toggle">
+              تفعيل الإشعار
+              <input data-config id="ENABLE_NOTIFY" data-type="boolean" type="checkbox" />
+            </label>
+            <label>
+              بريد المرسل
+              <input data-config id="NOTIFY_EMAIL" data-type="string" type="text" />
+            </label>
+            <label>
+              كلمة مرور التطبيق
+              <input data-config id="NOTIFY_PASS" data-type="string" type="password" />
+            </label>
+            <label>
+              بريد المستلم
+              <input data-config id="NOTIFY_TO" data-type="string" type="text" />
+            </label>
+          </div>
+        </section>
+      </main>
+
+      <footer class="app__footer">
+        <span>تم إنشاء لوحة التحكم لإدارة كل التفاصيل بسهولة.</span>
+        <span id="save-status" class="save-status"></span>
+      </footer>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
