@@ -14,42 +14,86 @@
           <p>تحكم تفصيلي كامل في إعدادات الأتمتة مع متابعة فورية للتقدم واللوج.</p>
         </div>
         <div class="header__actions">
+          <button id="export-config" class="btn btn--ghost">تصدير</button>
+          <button id="import-config" class="btn btn--ghost">استيراد</button>
+          <input id="import-file" type="file" accept="application/json" hidden />
+          <button id="reset-config" class="btn btn--secondary">استرجاع الحالي</button>
           <button id="save-config" class="btn btn--secondary">حفظ الإعدادات</button>
           <button id="run-automation" class="btn btn--primary">تشغيل الأتمتة</button>
         </div>
       </header>
 
+      <section class="overview" aria-label="ملخص الأداء">
+        <div class="stat-card">
+          <span>حالة التشغيل</span>
+          <strong id="status-running">متوقف</strong>
+        </div>
+        <div class="stat-card">
+          <span>نسبة الإنجاز</span>
+          <strong id="status-progress">0%</strong>
+        </div>
+        <div class="stat-card">
+          <span>عدد الإعدادات</span>
+          <strong id="total-settings">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>آخر تحديث</span>
+          <strong id="last-update">--:--:--</strong>
+        </div>
+      </section>
+
+      <section class="panel panel--toolbar">
+        <div class="toolbar">
+          <label class="search-box">
+            بحث سريع في الإعدادات
+            <input id="settings-search" type="text" placeholder="اكتب اسم الإعداد أو جزء من النص..." />
+          </label>
+          <div class="toolbar__actions">
+            <button id="expand-all" class="btn btn--ghost">توسيع الكل</button>
+            <button id="collapse-all" class="btn btn--ghost">طي الكل</button>
+            <button id="toggle-sync" class="btn btn--ghost">إيقاف التحديث التلقائي</button>
+            <button id="clear-search" class="btn btn--ghost">مسح البحث</button>
+          </div>
+        </div>
+        <p id="search-result" class="search-result">جميع الأقسام ظاهرة.</p>
+      </section>
+
       <main class="app__grid">
-        <section class="panel">
-          <h2>الحالة المباشرة</h2>
-          <div class="status">
-            <div>
-              <span class="status__label">الحالة:</span>
-              <span id="status-running" class="status__value">متوقف</span>
+        <section class="panel" data-section>
+          <button class="section-toggle" data-toggle-section aria-expanded="true">
+            <h2>الحالة المباشرة</h2>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="section-content">
+            <div class="progress-bar">
+              <div id="progress-fill" class="progress-bar__fill"></div>
             </div>
-            <div>
-              <span class="status__label">التقدم:</span>
-              <span id="status-progress" class="status__value">0%</span>
+            <div class="log">
+              <div class="log__header">
+                <h3>سجل التشغيل</h3>
+                <div class="log__actions">
+                  <button id="copy-log" class="btn btn--ghost btn--mini">نسخ</button>
+                  <button id="clear-log" class="btn btn--ghost btn--mini">مسح</button>
+                  <button id="refresh-log" class="btn btn--ghost btn--mini">تحديث</button>
+                </div>
+              </div>
+              <pre id="log-output">جاهز...</pre>
             </div>
-          </div>
-          <div class="progress-bar">
-            <div id="progress-fill" class="progress-bar__fill"></div>
-          </div>
-          <div class="log">
-            <div class="log__header">
-              <h3>سجل التشغيل</h3>
-              <button id="refresh-log" class="btn btn--ghost">تحديث</button>
-            </div>
-            <pre id="log-output">جاهز...</pre>
           </div>
         </section>
 
-        <section class="panel">
-          <h2>الإعدادات العامة</h2>
-          <div class="form-grid">
+        <section class="panel" data-section>
+          <button class="section-toggle" data-toggle-section aria-expanded="true">
+            <h2>الإعدادات العامة</h2>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="form-grid section-content">
             <label>
               رابط Grok
-              <input data-config id="GROK_URL" data-type="string" type="text" />
+              <div class="input-action-row">
+                <input data-config id="GROK_URL" data-type="string" type="text" />
+                <button type="button" id="open-grok-url" class="btn btn--ghost btn--mini">فتح الرابط</button>
+              </div>
             </label>
             <label>
               لغة الواجهة
@@ -78,9 +122,12 @@
           </div>
         </section>
 
-        <section class="panel">
-          <h2>التوقيت والانتظار</h2>
-          <div class="form-grid">
+        <section class="panel" data-section>
+          <button class="section-toggle" data-toggle-section aria-expanded="true">
+            <h2>التوقيت والانتظار</h2>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="form-grid section-content">
             <label>
               فاصل التحقق (ms)
               <input data-config id="CHECK_INTERVAL" data-type="number" type="number" min="500" step="500" />
@@ -104,9 +151,12 @@
           </div>
         </section>
 
-        <section class="panel">
-          <h2>إعدادات المتصفح</h2>
-          <div class="form-grid">
+        <section class="panel" data-section>
+          <button class="section-toggle" data-toggle-section aria-expanded="true">
+            <h2>إعدادات المتصفح</h2>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="form-grid section-content">
             <label class="toggle">
               تشغيل بدون واجهة (Headless)
               <input data-config id="HEADLESS" data-type="boolean" type="checkbox" />
@@ -134,9 +184,12 @@
           </div>
         </section>
 
-        <section class="panel">
-          <h2>محاولات وإسترجاع</h2>
-          <div class="form-grid">
+        <section class="panel" data-section>
+          <button class="section-toggle" data-toggle-section aria-expanded="true">
+            <h2>محاولات وإسترجاع</h2>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="form-grid section-content">
             <label>
               عدد المحاولات
               <input data-config id="MAX_RETRIES" data-type="number" type="number" min="0" step="1" />
@@ -164,9 +217,12 @@
           </div>
         </section>
 
-        <section class="panel">
-          <h2>المحددات المتقدمة</h2>
-          <div class="form-grid">
+        <section class="panel" data-section>
+          <button class="section-toggle" data-toggle-section aria-expanded="true">
+            <h2>المحددات المتقدمة</h2>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="form-grid section-content">
             <label>
               محدد نسبة العرض
               <input data-config id="GROK_SETTING_RATIO_BUTTON" data-type="string" type="text" />
@@ -218,9 +274,12 @@
           </div>
         </section>
 
-        <section class="panel">
-          <h2>تنسيق الملفات والوقت</h2>
-          <div class="form-grid">
+        <section class="panel" data-section>
+          <button class="section-toggle" data-toggle-section aria-expanded="true">
+            <h2>تنسيق الملفات والوقت</h2>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="form-grid section-content">
             <label>
               نمط اسم المشهد
               <input data-config id="SCENE_FILENAME_PATTERN" data-type="string" type="text" />
@@ -244,9 +303,12 @@
           </div>
         </section>
 
-        <section class="panel">
-          <h2>الإشعارات بالبريد</h2>
-          <div class="form-grid">
+        <section class="panel" data-section>
+          <button class="section-toggle" data-toggle-section aria-expanded="true">
+            <h2>الإشعارات بالبريد</h2>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="form-grid section-content">
             <label class="toggle">
               تفعيل الإشعار
               <input data-config id="ENABLE_NOTIFY" data-type="boolean" type="checkbox" />
@@ -269,6 +331,7 @@
 
       <footer class="app__footer">
         <span>تم إنشاء لوحة التحكم لإدارة كل التفاصيل بسهولة.</span>
+        <span id="dirty-indicator" class="dirty-indicator">كل التغييرات محفوظة</span>
         <span id="save-status" class="save-status"></span>
       </footer>
     </div>
