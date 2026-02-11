@@ -142,14 +142,16 @@ const validateInputs = () => {
         isValid = false;
       }
     }
-    if (input.id === 'GROK_URL' && input.value && !/^https?:\/\//i.test(input.value.trim())) {
-      input.classList.add('is-invalid');
-      isValid = false;
-    }
   });
 
   if (!isValid) showSaveStatus('يرجى تصحيح الحقول المحددة قبل الحفظ', '#ef4444');
   return isValid;
+};
+
+const normalizeUrl = (value) => {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
 };
 
 const getLabelText = (input) => input.closest('label')?.textContent?.replace(/\s+/g, ' ').trim().toLowerCase() ?? input.id.toLowerCase();
@@ -246,7 +248,10 @@ document.getElementById('save-config').addEventListener('click', async () => {
   setButtonBusy('save-config', true, 'جارٍ الحفظ...');
   try {
     const payload = collectConfig();
+    payload.GROK_URL = normalizeUrl(payload.GROK_URL);
     await api.saveConfig(payload);
+    const urlInput = document.getElementById('GROK_URL');
+    if (urlInput) urlInput.value = payload.GROK_URL;
     lastLoadedConfig = payload;
     updateDirtyState();
     showSaveStatus('تم حفظ الإعدادات بنجاح');
@@ -263,7 +268,11 @@ document.getElementById('run-automation').addEventListener('click', async () => 
   setButtonBusy('run-automation', true, 'جارٍ التشغيل...');
   try {
     showSaveStatus('يتم تشغيل الأتمتة...', '#f59e0b');
-    await api.run(collectConfig());
+    const payload = collectConfig();
+    payload.GROK_URL = normalizeUrl(payload.GROK_URL);
+    const urlInput = document.getElementById('GROK_URL');
+    if (urlInput) urlInput.value = payload.GROK_URL;
+    await api.run(payload);
     showSaveStatus('اكتمل التشغيل بنجاح');
   } catch {
     showSaveStatus('حدث خطأ أثناء التشغيل', '#ef4444');
