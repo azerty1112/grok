@@ -1,6 +1,6 @@
 'use strict';
 
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const config = require('./config.json');
 const backend = require('./main-gui-backend'); // new: نفس وظائفك (worker/background logic)
@@ -39,4 +39,24 @@ ipcMain.handle('grok:saveConfig', async (_, newConf) => {
 });
 ipcMain.handle('grok:getState', async () => {
   return await backend.getCurrentState();
+});
+
+ipcMain.handle('grok:openExternal', async (_, rawUrl) => {
+  const value = String(rawUrl || '').trim();
+  if (!value) return { ok: false, reason: 'empty_url' };
+
+  let finalUrl = value;
+  if (!/^https?:\/\//i.test(finalUrl)) finalUrl = `https://${finalUrl}`;
+
+  try {
+    const parsed = new URL(finalUrl);
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      return { ok: false, reason: 'invalid_protocol' };
+    }
+
+    await shell.openExternal(parsed.toString());
+    return { ok: true, url: parsed.toString() };
+  } catch (error) {
+    return { ok: false, reason: 'invalid_url' };
+  }
 });
